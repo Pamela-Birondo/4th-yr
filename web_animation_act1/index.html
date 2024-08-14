@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <style>
+            html, body {
+               margin: 0; 
+               padding: 0;
+               width: 100%;
+               height: 100%;
+               overflow: hidden;
+            }
+            #box, #box2 {
+                position: absolute;
+            }
+            #box {
+                left: 10px;
+                top: 10px;
+            }
+            #box2 {
+                left: 1200px;
+                top: 10px;
+            }
+            #box img, #box2 img {
+                height: 120px;
+                width: 120px;
+            }
+            .egg {
+                position: absolute;
+                height: 60px;
+                width: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="box">
+            <img src="hen.png" alt="Hen">
+        </div>
+        <div id="box2">
+            <img src="rooster.png" alt="Rooster">
+        </div>
+        <script>
+            let eggLaid = false;
+
+            document.onkeydown = function (e) {
+                var element1 = document.getElementById("box2");
+                var element2 = document.getElementById("box");
+                var elementWidth = element1.offsetWidth;
+                var elementHeight = element1.offsetHeight;
+                var screenWidth = window.innerWidth;
+                var screenHeight = window.innerHeight;
+
+                //  arrow keys
+                switch (e.keyCode) {
+                    case 37: // Left 
+                        var leftValue = parseInt(element1.style.left || 1200, 10) - 10;
+                        if (leftValue + elementWidth < 0) {
+                            leftValue = screenWidth;
+                        }
+                        element1.style.left = leftValue + "px";
+                        break;
+
+                    case 39: // Right 
+                        var leftValue = parseInt(element1.style.left || 1200, 10) + 10;
+                        if (leftValue > screenWidth) {
+                            leftValue = -elementWidth;
+                        }
+                        element1.style.left = leftValue + "px";
+                        break;
+
+                    case 38: // Up 
+                        var topValue = parseInt(element1.style.top || 0, 10) - 10;
+                        if (topValue + elementHeight < 0) {
+                            topValue = screenHeight;
+                        }
+                        element1.style.top = topValue + "px";
+                        break;
+
+                    case 40: // Down 
+                        var topValue = parseInt(element1.style.top || 0, 10) + 10;
+                        if (topValue > screenHeight) {
+                            topValue = -elementHeight;
+                        }
+                        element1.style.top = topValue + "px";
+                        break;
+                }
+
+                // W, A, S, D 
+                switch (e.keyCode) {
+                    case 65: // 'A' 
+                        var leftValue = parseInt(element2.style.left || 0, 10) - 10;
+                        if (leftValue + elementWidth < 0) {
+                            leftValue = screenWidth;
+                        }
+                        element2.style.left = leftValue + "px";
+                        break;
+
+                    case 68: // 'D' 
+                        var leftValue = parseInt(element2.style.left || 0, 10) + 10;
+                        if (leftValue > screenWidth) {
+                            leftValue = -elementWidth;
+                        }
+                        element2.style.left = leftValue + "px";
+                        break;
+
+                    case 87: // 'W' 
+                        var topValue = parseInt(element2.style.top || 0, 10) - 10;
+                        if (topValue + elementHeight < 0) {
+                            topValue = screenHeight;
+                        }
+                        element2.style.top = topValue + "px";
+                        break;
+
+                    case 83: // 'S' 
+                        var topValue = parseInt(element2.style.top || 0, 10) + 10;
+                        if (topValue > screenHeight) {
+                            topValue = -elementHeight;
+                        }
+                        element2.style.top = topValue + "px";
+                        break;
+                }
+
+                // Check for collision
+                if (checkCollision(element1, element2) && !eggLaid) {
+                    layEgg(element1, element2);
+                    eggLaid = true;
+                } else if (!checkCollision(element1, element2)) {
+                    eggLaid = false; // Reset flag when no longer colliding
+                }
+            };
+
+            function checkCollision(element1, element2) {
+                var rect1 = element1.getBoundingClientRect();
+                var rect2 = element2.getBoundingClientRect();
+
+                return !(rect1.right < rect2.left || 
+                         rect1.left > rect2.right || 
+                         rect1.bottom < rect2.top || 
+                         rect1.top > rect2.bottom);
+            }
+
+            function layEgg(element1, element2) {
+                // Calculate egg position as the midpoint between the two elements
+                var eggX = (parseInt(element1.style.left, 10) + parseInt(element2.style.left, 10)) / 2;
+                var eggY = (parseInt(element1.style.top, 10) + parseInt(element2.style.top, 10)) / 2;
+
+                // egg image
+                var egg = document.createElement("img");
+                egg.src = "egg.png"; // egg image 
+                egg.className = "egg";
+                egg.style.left = eggX + "px";
+                egg.style.top = eggY + "px";
+
+                document.body.appendChild(egg);
+            }
+        </script>
+    </body>
+</html>
